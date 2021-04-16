@@ -11,5 +11,5 @@ const {mongoUri} = config.app;
 mongoose.connect(mongoUri).then(()=> {
 }  ).catch(err=>console.log("Error connection to MongoDB",mongoUri,err))
 app.listen(
-    29950,
+    29940,
     () => console.log('Сервер запущен на порту:'));

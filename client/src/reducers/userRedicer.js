@@ -25,3 +25,4 @@ export const userReducer = (state = initialState, action) => {
 };
 
 export const userLogIn = (user) => ({type: LOG_IN,user});
+export const userLogOut = () => ({type: LOG_OUT});

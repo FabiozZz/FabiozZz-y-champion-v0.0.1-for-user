@@ -1,14 +1,19 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
 import './navbar.css';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {userLogOut} from "../../reducers/userRedicer";
 
 export const Navbar = () => {
+    const dispatch = useDispatch();
     const isAuth = useSelector(state => state.user.isAuth);
     const routes = [
         {path:'/login',title:'Войти'},
         {path:'/registration',title:'Регистрация'},
     ]
+    const handleLogOut = () => {
+        dispatch(userLogOut());
+    };
 
     return (
         <div className={'navbar'}>
@@ -18,7 +23,7 @@ export const Navbar = () => {
                     <ul>
                         {
                             isAuth?
-                            <li>Выход</li>
+                            <li onClick={handleLogOut}>Выход</li>
                             :
                             routes.map((rout,index)=>{
                                 return (
