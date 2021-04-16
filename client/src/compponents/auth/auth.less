@@ -1,0 +1,47 @@
+@import "../../utils/colors";
+.auth{
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  align-items: center;
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  align-self: center;
+  margin-top: 100px;
+
+  &__title{
+    font-size: 30px;
+    font-weight: 700;
+  }
+  &__select{
+    // A reset of styles, including removing the default dropdown arrow
+    appearance: none;
+    // Additional resets for further consistency
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    &::-ms-expand {
+      display: none;
+    }
+    outline: none;
+  }
+  input{
+    //margin: 5px 20px;
+  }
+  &__btn{
+    color: white;
+    border: none;
+    background-color: @font-color;
+    border-radius: 8px;
+    font-weight: 700;
+    padding: 5px 10px;
+    float: right;
+    margin-top: 10px;
+  }
+}
