@@ -1,0 +1,38 @@
+.auth__steps {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  top: -30%;
+  align-items: center;
+  position: absolute;
+}
+.auth__steps:after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 130%;
+  height: 1px;
+  background-color: black;
+  top: 50%;
+  left: -15%;
+}
+.auth__steps__wrapper {
+  background-color: #e9e6e6;
+  padding: 10px;
+}
+.auth__steps__wrapper span {
+  color: wheat;
+}
+.auth__steps__wrapper__circle {
+  margin-right: 10px;
+  padding: 10px;
+  clip-path: circle(15px at center);
+  background-color: white;
+}
+.activeStep span {
+  color: black;
+}
+.activeStep #circleStep {
+  background-color: lightgreen;
+}
+/*# sourceMappingURL=forget.css.map */

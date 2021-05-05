@@ -1,7 +1,7 @@
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
-const mock = new MockAdapter(axios,{delayResponse:4000});
+const mock = new MockAdapter(axios,{delayResponse:2000});
 
 const user = {
     surName:'Mr.',
@@ -45,8 +45,13 @@ const users=[
         email: 'fabiozzz.dev@gmail.com',
     },
 ]
+
 mock.onPost('/auth/login').reply(200, {user,accessToken: 'TOKEN_ACC',refreshToken:'TOKEN_REF'});
 mock.onPost('/auth/register').reply(200, {success: 'Ok'});
+
+mock.onPost('/auth/forget/email').reply(200, {success: 'Ok'});
+mock.onPost('/auth/forget/code').reply(200, {success: 'Ok'});
+mock.onPost('/auth/forget/refreshPass').reply(200, {success: 'Ok'});
 
 mock.onPost('/auth/refresh').reply(200,{user,accessToken: 'TOKEN_ACC2',refreshToken:'TOKEN_REs2'});
 
@@ -120,6 +125,14 @@ class Api {
         return this.token;
     }
 
+    /**
+     * Вход в приложение
+     * Отправляет данные пользователя {email,password}
+     * Получает пару токенов и пользователя
+     * @param login
+     * @param password
+     * @returns {Promise<*>}
+     */
     async login({ login, password }) {
         const res = await this.client.post("/auth/login", {
             login,
@@ -133,31 +146,92 @@ class Api {
         return res
     }
 
+    /**
+     * Автовход
+     * После обновления страницы удаляется токен из приложения
+     * Используя RefreshToken из localStorage восстанавливает утерянный токен
+     * Получает новую пару токенов и пользователя
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     async autoLog() {
         const refToken = localStorage.getItem('refresh_token');
         if (refToken) {
             return await this.client.post('/auth/refresh', {refreshToken: refToken}).then(ref=> {
                 this.setToken(ref.data.accessToken);
-                localStorage.removeItem('refresh_token');
                 localStorage.setItem('refresh_token', ref.data.refreshToken);
                 return ref.data.user
             });
         }
     }
 
+    /**
+     * Выход из приложения
+     * Удаляются все токены и стирается currentUser из Redux
+     */
     logout() {
         this.token = null;
         this.refreshToken = null;
         localStorage.removeItem('refresh_token')
     }
 
+    /**
+     * Регистрация пользователя
+     * Отправляет данные о пользователе из формы на сервер
+     * Получает только статус операции
+     * @param data
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     async register(data={}) {
         return await this.client.post('/auth/register', data)
     }
 
+    /**
+     * Временный запрос на получение фиктивных пользователей
+     * создавался для проверки наличия в запросе Header:{Authorization: Bearer <someToken>}
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     async getUsers() {
         return await this.client.get("/users").then((data) => data)
     }
+
+    /**
+     * Восстановление пароля
+     * Ввод email для отправки письма
+     * @param email
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    async forgetEmail(email) {
+        return await  this.client.post('/auth/forget/email',{email})
+    }
+
+    /**
+     * Восстановление пароля
+     * Ввод code полученновго в email
+     * @param code
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    async forgetCode(code) {
+        return await  this.client.post('/auth/forget/code',{code})
+    }
+
+    /**
+     * Восстановление пароля
+     * Ввод пары даанных, "пароль" - "потдверждение пароля"
+     * @param data
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    async forgeRefreshPass(data) {
+        return await  this.client.post('/auth/forget/refreshPass',data)
+    }
+
+    /**
+     * Отмена операции запроса для axios
+     * @returns {CancelTokenSource}
+     */
+    abortAxiosCalling(){
+        return this.client.CancelToken.source();
+    }
+
 }
 
 export default new Api();

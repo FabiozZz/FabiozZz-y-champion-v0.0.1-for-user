@@ -2,12 +2,12 @@ import React from 'react';
 import './input.css';
 import './input.css.map';
 
-export const Input = (props) => {
+export const Input = ({setValue,value,type,placeholder}) => {
     const handleChangeValue = (e)=>{
-        props.setValue(e.target.value);
+        setValue(e.target.value);
     }
     return (
-        <input value={props.value} onChange={handleChangeValue} type={props.type} placeholder={props.placeholder}/>
+        <input value={value} onChange={handleChangeValue} type={type} placeholder={placeholder}/>
     );
 };
 
